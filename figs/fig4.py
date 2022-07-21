@@ -53,7 +53,7 @@ for index, case in enumerate(cases):
         xarr.offset.values, xarr.time.values, xarr.values,
         rasterized=True, norm=colors.SymLogNorm(linthresh=100, vmin=-vlim, vmax=vlim))
     fig.colorbar(
-        pcm, ax=ax, label=r"Strain rate $[\rm{n}m/\rm{m}]$", pad=0.02, aspect=30)
+        pcm, ax=ax, label=r"Strain rate $[\rm{nm}/\rm{m}/\rm{s}]$", pad=0.02, aspect=30)
     s = xarr.offset - shot_offset
     t_p = np.abs(s) / cp1
     t_roll = np.abs(s) / cs1

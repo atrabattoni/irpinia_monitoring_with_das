@@ -48,7 +48,7 @@ ax.annotate("A", (51, 1.01), xycoords=(
     "data", "axes fraction"), horizontalalignment="center")
 ax.annotate("B", (351, 1.01), xycoords=(
     "data", "axes fraction"), horizontalalignment="center")
-ax.images[-1].colorbar.set_label("Strain rate [nm/m]")
+ax.images[-1].colorbar.set_label("Strain rate [nm/m/s]")
 
 fig.savefig("fig5.jpg")
 plt.close(fig)

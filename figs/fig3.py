@@ -80,7 +80,7 @@ ax.plot(label="COL3")
 ax = axes[1]
 pcm = ax.pcolormesh(t_das, f_das, S_das, vmin=-170, vmax=-110, rasterized=True)
 fig.colorbar(pcm, ax=ax, pad=0.02,
-             label=r"PSD $[\rm{dB}\ \rm{re}\ \rm{strain}^2\rm{Hz}^{-1}]$")
+             label=r"PSD $[\rm{dB}\ \rm{re}\ \rm{strain}^2\rm{s}^{-2}\rm{Hz}^{-1}]$")
 ax.set_ylabel(r"Frequency $[\rm{Hz}]$")
 ax.axvline(0, c='C3', ls=":")
 ax.axvline(p2s, c='C3', ls=":")
@@ -94,7 +94,7 @@ ax.set_ylim(0, 50)
 ax = subfigs[1].subplots()
 pcm = ax.pcolormesh(k, f, fk, vmin=-160, vmax=-100, rasterized=True)
 fig.colorbar(pcm, ax=ax, pad=0.02, aspect=40,
-             label=r"PSD $[\rm{dB}\ \rm{re}\ \rm{strain}^2\rm{Hz}^{-1}\rm{m}^{-1}]$")
+             label=r"PSD $[\rm{dB}\ \rm{re}\ \rm{strain}^2\rm{s}^{-2}\rm{Hz}^{-1}\rm{m}^{-1}]$")
 clist = [60, 130]
 for c in clist:
     ax.plot([0, k[-1]], [0, k[-1]*c], c="C3", ls=":")

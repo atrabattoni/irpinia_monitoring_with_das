@@ -91,7 +91,7 @@ pcm = ax.pcolormesh(
     xarr.offset.values, xarr.time.values, xarr.values,
     rasterized=True, norm=colors.SymLogNorm(linthresh=linthresh, vmin=-vlim, vmax=vlim))
 fig.colorbar(
-    pcm, ax=ax, label=r"Strain rate [nm/m]", pad=0.02, aspect=30)
+    pcm, ax=ax, label=r"Strain rate [nm/m/s]", pad=0.02, aspect=30)
 ax.set_xlabel(r"Offset $[\rm{m}]$")
 ax.set_ylim(3.0, -0.5)
 ax.set_ylabel(r"Time $[\rm{s}]$")

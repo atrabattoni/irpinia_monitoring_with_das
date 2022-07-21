@@ -92,7 +92,7 @@ vlim = np.max(np.abs(x_das))
 pcm = ax.pcolormesh(
     s_das, t_das, x_das,
     rasterized=True, norm=SymLogNorm(vlim/50, vmin=-vlim, vmax=vlim))
-fig.colorbar(pcm, ax=ax, label=r"Strain rate $[\rm{n}m/\rm{m}]$",  location='bottom',
+fig.colorbar(pcm, ax=ax, label=r"Strain rate $[\rm{nm}/\rm{m}/\rm{s}]$",  location='bottom',
              pad=0.02, aspect=30)
 ax.plot(fiber["offset"], pfront, color="C3", ls=":")
 ax.plot(fiber["offset"], sfront, color="C3", ls=":")
