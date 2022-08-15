@@ -103,5 +103,5 @@ ax.set_ylabel(r"Frequency $[\rm{Hz}]$")
 ax.set_xlabel(r"Wavenumber $[\rm{m}^{-1}]$")
 ax.set_ylim(0, 20)
 
-fig.savefig("fig3.jpg")
+fig.savefig("fig3.png")
 plt.close(fig)

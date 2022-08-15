@@ -118,5 +118,5 @@ for ax in axes:
     at.patch.set_boxstyle("round4")
     ax.add_artist(at)
 
-fig.savefig("fig3.jpg")
+fig.savefig("fig3.png")
 plt.close(fig)
