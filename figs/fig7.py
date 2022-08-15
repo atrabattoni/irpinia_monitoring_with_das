@@ -1,9 +1,9 @@
+import matplotlib.cm as cm
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy.signal as sp
-import xarray as xr
 import obspy
+import xarray as xr
 
 from utils import bandpass, v2sr
 
@@ -13,14 +13,15 @@ freqmin = 1.0
 freqmax = 20.0
 ng = 12
 time_offset = np.timedelta64(500, "ms")
-before = 0.5
+before = 1.0
 after = 3.5
 limit_values = [50, 351, 900]
 limit_names = ["A", "B", "C"]
 limits = dict(zip(limit_names, limit_values))
 
 cases = ["model", "bedrock"]
-xarrs = {}
+velocities = {}
+strain_rates = {}
 
 # process simluated data
 for case in cases:
@@ -29,14 +30,17 @@ for case in cases:
     ds = (xarr['offset'][1] - xarr['offset'][0]).values
     sampling_rate = 1/(xarr['time'][1] - xarr['time'][0]).values
     xarr["offset"] = xarr["offset"] + 150
+    velocities[case] = xarr
     xarr = v2sr(xarr, ng, ds)
     xarr = xr.apply_ufunc(bandpass, xarr, kwargs=dict(
         freqmin=freqmin, freqmax=freqmax, df=sampling_rate, axis=0))
-    xarrs[case] = xarr
+    strain_rates[case] = xarr
 
 # get bedrock amplitude value
-scale = np.max(
-    np.abs(xarrs["bedrock"].isel(offset=slice(ng, -ng)).values))
+strain_rate_scale = np.max(
+    np.abs(strain_rates["bedrock"].isel(offset=slice(ng, -ng)).values))
+velocity_scale = np.max(
+    np.abs(velocities["bedrock"].isel(offset=slice(ng, -ng)).values))
 
 # get picked phases
 tr = obspy.read("../data/" + event + "*.sac")[0]
@@ -57,17 +61,16 @@ ds = (xarr["offset"][1] - xarr["offset"][0]).values
 xarr = xr.apply_ufunc(bandpass, xarr, kwargs=dict(
     freqmin=freqmin, freqmax=freqmax, df=sampling_rate, axis=0))
 xarr["time"] = (xarr["time"] - toa) / np.timedelta64(1, 's')
-xarrs["event"] = xarr
-
+strain_rates["event"] = xarr
 
 # plot
 plt.style.use("figure.mplstyle")
 mm = 1/25.4
-fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(190 * mm, 60 * mm),
-                         dpi=300, constrained_layout=True)
+fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(190 * mm, 65 * mm),
+                         dpi=300, constrained_layout=True, sharey=True)
 
 case = "model"
-xarr = xarrs[case] / scale
+xarr = velocities[case] / velocity_scale
 
 ax = axes[0]
 vlim = np.max(np.abs(xarr.values))
@@ -76,13 +79,11 @@ pcm = ax.pcolormesh(
     xarr.offset.values, xarr.time.values, xarr.values,
     rasterized=True, norm=colors.SymLogNorm(linthresh=linthresh, vmin=-vlim, vmax=vlim))
 fig.colorbar(
-    pcm, ax=ax, label=r"Normalized strain rate", pad=0.02, aspect=30)
+    pcm, ax=ax, label=r"Normalized velocity", pad=0.02, aspect=30, orientation="horizontal")
 ax.set_xlabel(r"Offset $[\rm{m}]$")
-ax.set_ylim(3.0, -0.5)
 ax.set_ylabel(r"Time $[\rm{s}]$")
 
-case = "event"
-xarr = xarrs[case]
+xarr = strain_rates[case] / strain_rate_scale
 
 ax = axes[1]
 vlim = np.max(np.abs(xarr.values))
@@ -91,10 +92,34 @@ pcm = ax.pcolormesh(
     xarr.offset.values, xarr.time.values, xarr.values,
     rasterized=True, norm=colors.SymLogNorm(linthresh=linthresh, vmin=-vlim, vmax=vlim))
 fig.colorbar(
-    pcm, ax=ax, label=r"Strain rate [nm/m/s]", pad=0.02, aspect=30)
+    pcm, ax=ax, label=r"Normalized strain rate", pad=0.02, aspect=30, orientation="horizontal")
 ax.set_xlabel(r"Offset $[\rm{m}]$")
-ax.set_ylim(3.0, -0.5)
-ax.set_ylabel(r"Time $[\rm{s}]$")
 
-fig.savefig("fig7.jpg")
+case = "event"
+xarr = strain_rates[case]
+
+ax = axes[2]
+vlim = np.max(np.abs(xarr.values)) / 4
+linthresh = vlim / 20
+pcm = ax.pcolormesh(
+    xarr.offset.values, xarr.time.values + 0.5, xarr.values,
+    rasterized=True, norm=colors.SymLogNorm(linthresh=linthresh, vmin=-vlim, vmax=vlim))
+fig.colorbar(
+    pcm, ax=ax, label=r"Strain rate $[\rm{nm}.\rm{m}^{-1}.\rm{s}^{-1}]$", pad=0.02, aspect=30, orientation="horizontal")
+ax.set_xlabel(r"Offset $[\rm{m}]$")
+
+cmap = cm.get_cmap('viridis')
+rgba = cmap(0.5)
+annotations = ["a)", "b)", "c)"]
+boxes = ["Model", "Model", "DAS"]
+for k, ax in enumerate(axes):
+    ax.text(0.02, 0.98, annotations[k], transform=ax.transAxes,
+            fontweight='bold', fontsize=14, va='top', ha="left", color="white")
+    ax.text(0.96, 0.96, boxes[k], transform=ax.transAxes,
+            va='top', ha="right",
+            bbox=dict(boxstyle="round4", fc="white", ec="black"))
+    ax.set_facecolor(rgba)
+    ax.set_ylim(3.0, -0.5)
+
+fig.savefig("fig7.png")
 plt.close(fig)
