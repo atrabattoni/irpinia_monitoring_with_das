@@ -7,8 +7,8 @@ q10 = 6.980e-10
 q50 = 1.252e-09
 q90 = 4.842e-09
 
-# estimated power density
-dataset = pd.read_csv("../data/power_densities.csv")
+# estimated energy density
+dataset = pd.read_csv("../data/energy_densities.csv")
 signal_kinetic = dataset["signal_kinetic"]
 signal_elastic = dataset["signal_elastic"]
 noise_kinetic = dataset["noise_kinetic"]
@@ -35,7 +35,7 @@ plt.axhline(q90, lw=0.75, c="black", ls=":", alpha=0.5)
 plt.loglog(signal_kinetic[~mask], signal_elastic[~mask], "X", c="C3", label="DAS SNR < 2")
 plt.loglog(signal_kinetic[mask], signal_elastic[mask], "o", c="C2", label="DAS SNR > 2")
 plt.legend()
-plt.ylabel("Elastic power density (DAS) [$J m^{-3} s^{-1}$]")
-plt.xlabel("Kinetic power density (COL3) [$J m^{-3} s^{-1}$]")
+plt.ylabel("Elastic energy density (DAS) [$J/m^3$]")
+plt.xlabel("Kinetic energy density (COL3) [$J/m^3$]")
 plt.savefig("fig9.png")
 plt.close()
