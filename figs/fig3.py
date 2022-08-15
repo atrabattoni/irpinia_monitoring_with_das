@@ -1,9 +1,11 @@
+import string
 import matplotlib.pyplot as plt
 import numpy as np
 import obspy
 import scipy.signal as sp
 import xarray as xr
 from matplotlib.ticker import MultipleLocator
+from matplotlib.offsetbox import AnchoredText
 from utils import fk_analysis
 
 # parameters
@@ -37,7 +39,7 @@ sampling_rate = 1 / time_step
 xarr = xarr.sel(
     time=slice(starttime - np.timedelta64(1, 's'),
                endtime + np.timedelta64(1, 's')),
-    offset=slice(limits["A"], limits["B"]))
+    offset=slice(limits["B"], limits["C"]))
 s_das, t_das, x_das = xarr.offset.values, xarr.time.values, xarr.values
 
 # origin times
@@ -102,6 +104,19 @@ for c in clist:
 ax.set_ylabel(r"Frequency $[\rm{Hz}]$")
 ax.set_xlabel(r"Wavenumber $[\rm{m}^{-1}]$")
 ax.set_ylim(0, 20)
+
+letters = iter(string.ascii_letters)
+for ax in [*axes, ax]:
+    at = AnchoredText(
+        f"{next(letters)})", loc="upper left", frameon=False, pad=0., borderpad=0.25,
+        prop=dict(fontsize=14, weight="bold", color="white"))
+    ax.add_artist(at)
+
+boxes = iter(["COL3", "DAS"])
+for ax in axes:
+    at = AnchoredText(next(boxes), loc="upper right", pad=0.2, borderpad=0.6)
+    at.patch.set_boxstyle("round4")
+    ax.add_artist(at)
 
 fig.savefig("fig3.png")
 plt.close(fig)
