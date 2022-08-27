@@ -66,10 +66,10 @@ ax.annotate("B", (351, 1.01), xycoords=(
     "data", "axes fraction"), horizontalalignment="center")
 ax.images[-1].colorbar.set_label("Strain rate [nm/m/s]")
 at = AnchoredText(
-    case, frameon=True, loc='upper right')
+    case, frameon=True, loc='upper right', prop=dict(font="Times New Roman"))
 at.patch.set_boxstyle("circle,pad=0.")
 at.patch.set(facecolor="yellow")
 ax.add_artist(at)
 
-fig.savefig(f"fig6_{event}.png")
+fig.savefig(f"fig6_{case}.png")
 plt.close(fig)
