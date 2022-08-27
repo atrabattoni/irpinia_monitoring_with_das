@@ -29,7 +29,7 @@ for case in cases:
     xarr = xr.open_dataarray(fname)
     ds = (xarr['offset'][1] - xarr['offset'][0]).values
     sampling_rate = 1/(xarr['time'][1] - xarr['time'][0]).values
-    xarr["offset"] = xarr["offset"] + 150
+    xarr["offset"] = xarr["offset"] + 150 + 50
     velocities[case] = xarr
     xarr = v2sr(xarr, ng, ds)
     xarr = xr.apply_ufunc(bandpass, xarr, kwargs=dict(
@@ -67,7 +67,7 @@ strain_rates["event"] = xarr
 plt.style.use("figure.mplstyle")
 mm = 1/25.4
 fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(190 * mm, 65 * mm),
-                         dpi=300, constrained_layout=True, sharey=True)
+                         dpi=300, constrained_layout=True, sharey=True, sharex=True)
 
 case = "model"
 xarr = velocities[case] / velocity_scale
@@ -120,6 +120,17 @@ for k, ax in enumerate(axes):
             bbox=dict(boxstyle="round4", fc="white", ec="black"))
     ax.set_facecolor(rgba)
     ax.set_ylim(3.0, -0.5)
+    t0 = 0.25
+    cs1 = 60
+    cs2 = 130
+    ax.plot([50, 175], [t0, t0 + (175 - 50)/cs1], "w:")
+    ax.plot([50, 200], [t0, t0 + (200 - 50)/cs2], "w:")
+    ax.text(175, t0 + (175 - 50)/cs1,
+            f"{cs1} m/s", color="white", fontweight="bold", va="center")
+    ax.text(200, t0 + (200 - 50)/cs2,
+            f"{cs2} m/s", color="white", fontweight="bold", va="center")
+    ax.set_xlim([50, 350])
+    ax.set_xticks([50, 100, 150, 200, 250, 300, 350])
 
 fig.savefig("fig8.png")
 plt.close(fig)
