@@ -29,7 +29,7 @@ mm = 1 / 25.4
 plt.style.use("figure.mplstyle")
 plt.figure(dpi=300, figsize=(95 * mm, 80 * mm), constrained_layout=True)
 plt.loglog(x, y, "--", color="black", label="Linear fit")
-plt.axhline(q10, lw=0.75, c="black", ls=":", alpha=0.5, label="DAS noise 10th and 90th quantile")
+plt.axhline(q10, lw=0.75, c="black", ls=":", alpha=0.5, label="DAS noise 10th and 90th percentile")
 plt.axhline(q50, lw=0.75, c="black", ls="-", alpha=0.5, label="DAS noise median")
 plt.axhline(q90, lw=0.75, c="black", ls=":", alpha=0.5)
 plt.loglog(signal_kinetic[~mask], signal_elastic[~mask], "X", c="C3", label="DAS SNR < 2")
